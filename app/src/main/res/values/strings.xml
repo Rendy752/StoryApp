@@ -2,4 +2,7 @@
     <string name="app_name">StoryApp</string>
     <string name="email_error_message">Format email salah.</string>
     <string name="password_error_message">Password tidak boleh kurang dari 8 karakter.</string>
+    <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
+    <string name="camera_failed_to_start">Gagal memunculkan kamera.</string>
+    <string name="story_image_description">Gambar cerita</string>
 </resources>
