@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">StoryApp</string>
+    <string name="email_error_message">Format email salah.</string>
+    <string name="password_error_message">Password tidak boleh kurang dari 8 karakter.</string>
 </resources>
