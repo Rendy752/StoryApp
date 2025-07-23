@@ -1,8 +1,11 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_description"
     android:initialLayout="@layout/story_widget"
+    android:label="@string/widget_name"
     android:minWidth="250dp"
     android:minHeight="110dp"
     android:previewImage="@drawable/no_image"
+    android:previewLayout="@layout/story_widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen" />

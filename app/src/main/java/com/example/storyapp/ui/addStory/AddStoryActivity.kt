@@ -18,6 +18,7 @@ import com.example.storyapp.data.Result
 import com.example.storyapp.databinding.ActivityAddStoryBinding
 import com.example.storyapp.ui.ViewModelFactory
 import com.example.storyapp.ui.main.MainActivity
+import com.example.storyapp.ui.widget.StoryWidget
 import com.example.storyapp.utils.getImageUri
 import com.example.storyapp.utils.reduceFileImage
 import com.example.storyapp.utils.uriToFile
@@ -56,19 +57,29 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        val previewAnimatorY = ObjectAnimator.ofFloat(binding.ivPreview, View.TRANSLATION_Y, -50f, 0f).setDuration(500)
-        val previewAlpha = ObjectAnimator.ofFloat(binding.ivPreview, View.ALPHA, 0f, 1f).setDuration(500)
+        val previewAnimatorY =
+            ObjectAnimator.ofFloat(binding.ivPreview, View.TRANSLATION_Y, -50f, 0f).setDuration(500)
+        val previewAlpha =
+            ObjectAnimator.ofFloat(binding.ivPreview, View.ALPHA, 0f, 1f).setDuration(500)
 
-        val galleryAnimatorX = ObjectAnimator.ofFloat(binding.btnGallery, View.TRANSLATION_X, -50f, 0f).setDuration(500)
-        val galleryAlpha = ObjectAnimator.ofFloat(binding.btnGallery, View.ALPHA, 0f, 1f).setDuration(500)
+        val galleryAnimatorX =
+            ObjectAnimator.ofFloat(binding.btnGallery, View.TRANSLATION_X, -50f, 0f)
+                .setDuration(500)
+        val galleryAlpha =
+            ObjectAnimator.ofFloat(binding.btnGallery, View.ALPHA, 0f, 1f).setDuration(500)
 
-        val cameraAnimatorX = ObjectAnimator.ofFloat(binding.btnCamera, View.TRANSLATION_X, -50f, 0f).setDuration(500)
-        val cameraAlpha = ObjectAnimator.ofFloat(binding.btnCamera, View.ALPHA, 0f, 1f).setDuration(500)
+        val cameraAnimatorX =
+            ObjectAnimator.ofFloat(binding.btnCamera, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val cameraAlpha =
+            ObjectAnimator.ofFloat(binding.btnCamera, View.ALPHA, 0f, 1f).setDuration(500)
 
-        val descriptionAlpha = ObjectAnimator.ofFloat(binding.edAddDescription, View.ALPHA, 0f, 1f).setDuration(500)
+        val descriptionAlpha =
+            ObjectAnimator.ofFloat(binding.edAddDescription, View.ALPHA, 0f, 1f).setDuration(500)
 
-        val addAnimatorX = ObjectAnimator.ofFloat(binding.buttonAdd, View.TRANSLATION_X, -50f, 0f).setDuration(500)
-        val addAlpha = ObjectAnimator.ofFloat(binding.buttonAdd, View.ALPHA, 0f, 1f).setDuration(500)
+        val addAnimatorX =
+            ObjectAnimator.ofFloat(binding.buttonAdd, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val addAlpha =
+            ObjectAnimator.ofFloat(binding.buttonAdd, View.ALPHA, 0f, 1f).setDuration(500)
 
         AnimatorSet().apply {
             playTogether(
@@ -151,6 +162,12 @@ class AddStoryActivity : AppCompatActivity() {
                         is Result.Success -> {
                             showLoading(false)
                             showToast(result.data.message)
+
+                            val updateWidgetIntent = Intent(this, StoryWidget::class.java).apply {
+                                action = StoryWidget.UPDATE_ACTION
+                            }
+                            sendBroadcast(updateWidgetIntent)
+
                             val intent = Intent(this, MainActivity::class.java)
                             intent.flags =
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
