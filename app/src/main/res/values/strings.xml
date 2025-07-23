@@ -5,4 +5,6 @@
     <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
     <string name="camera_failed_to_start">Gagal memunculkan kamera.</string>
     <string name="story_image_description">Gambar cerita</string>
+    <string name="add_new_story">Tambah Story Baru</string>
+    <string name="logout">Logout</string>
 </resources>

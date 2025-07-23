@@ -30,7 +30,6 @@ class ViewModelFactory(private val repository: StoryRepository) : ViewModelProvi
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
                 DetailViewModel(repository) as T
             }
-            // Tambahkan ViewModel lain di sini
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }

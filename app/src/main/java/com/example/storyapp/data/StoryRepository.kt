@@ -1,7 +1,7 @@
 package com.example.storyapp.data
 
 import androidx.lifecycle.liveData
-import com.example.storyapp.data.response.FileUploadResponse
+import com.example.storyapp.data.response.ErrorResponse
 import com.example.storyapp.data.pref.UserPreference
 import com.example.storyapp.data.pref.User
 import com.example.storyapp.data.retrofit.ApiService
@@ -76,7 +76,8 @@ class StoryRepository private constructor(
         )
         try {
             val user = userPreference.getSession().first()
-            val response = apiService.addNewStory("Bearer ${user.token}", multipartBody, requestBody)
+            val response =
+                apiService.addNewStory("Bearer ${user.token}", multipartBody, requestBody)
             emit(Result.Success(response))
         } catch (e: HttpException) {
             emit(Result.Error(parseError(e)))
@@ -96,7 +97,7 @@ class StoryRepository private constructor(
     private fun parseError(e: HttpException): String {
         return try {
             val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
+            val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
             errorResponse.message
         } catch (_: Exception) {
             "Terjadi kesalahan (${e.code()})"
