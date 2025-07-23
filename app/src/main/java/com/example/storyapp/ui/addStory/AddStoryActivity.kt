@@ -1,6 +1,7 @@
 package com.example.storyapp.ui.addStory
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import com.example.storyapp.databinding.ActivityAddStoryBinding
 import com.example.storyapp.ui.ViewModelFactory
 import com.example.storyapp.ui.main.MainActivity
 import com.example.storyapp.utils.getImageUri
+import com.example.storyapp.utils.reduceFileImage
 import com.example.storyapp.utils.uriToFile
 
 class AddStoryActivity : AppCompatActivity() {
@@ -26,6 +28,18 @@ class AddStoryActivity : AppCompatActivity() {
     private val viewModel by viewModels<AddStoryViewModel> {
         ViewModelFactory.getInstance(this)
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "Permission request granted", Toast.LENGTH_LONG).show()
+                startCamera()
+            } else {
+                Toast.makeText(this, "Permission request denied", Toast.LENGTH_LONG).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,43 +71,60 @@ class AddStoryActivity : AppCompatActivity() {
     ) { isSuccess ->
         if (isSuccess) {
             showImage()
+        } else {
+            Log.d("Camera", "Pengambilan gambar dibatalkan")
         }
     }
 
     private fun startCamera() {
-        currentImageUri = getImageUri(this)
-        currentImageUri?.let {
-            launcherIntentCamera.launch(it)
-        } ?: showToast(getString(R.string.camera_failed_to_start))
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            currentImageUri = getImageUri(this)
+            currentImageUri?.let {
+                launcherIntentCamera.launch(it)
+            } ?: showToast(getString(R.string.camera_failed_to_start))
+        } else {
+            requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+        }
     }
 
     private fun showImage() {
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
+            binding.ivPreview.setImageURI(null)
             binding.ivPreview.setImageURI(it)
         }
     }
 
     private fun uploadImage() {
         currentImageUri?.let { uri ->
-            val imageFile = uriToFile(uri, this)
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("Image File", "showImage: ${imageFile.path}")
             val description = binding.edAddDescription.text.toString()
+
+            if (description.isEmpty()) {
+                showToast("Deskripsi tidak boleh kosong.")
+                return
+            }
 
             viewModel.uploadImage(imageFile, description).observe(this) { result ->
                 if (result != null) {
-                    when(result) {
+                    when (result) {
                         is Result.Loading -> {
-                            binding.progressBar.visibility = View.VISIBLE
+                            showLoading(true)
                         }
+
                         is Result.Success -> {
-                            binding.progressBar.visibility = View.GONE
+                            showLoading(false)
                             showToast(result.data.message)
                             val intent = Intent(this, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
+                            finish()
                         }
+
                         is Result.Error -> {
-                            binding.progressBar.visibility = View.GONE
+                            showLoading(false)
                             showToast(result.error)
                         }
                     }
@@ -104,5 +135,9 @@ class AddStoryActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }
