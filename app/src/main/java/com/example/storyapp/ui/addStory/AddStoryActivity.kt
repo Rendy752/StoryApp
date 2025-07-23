@@ -1,5 +1,7 @@
 package com.example.storyapp.ui.addStory
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -46,9 +48,42 @@ class AddStoryActivity : AppCompatActivity() {
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        playAnimation()
+
         binding.btnGallery.setOnClickListener { startGallery() }
         binding.btnCamera.setOnClickListener { startCamera() }
         binding.buttonAdd.setOnClickListener { uploadImage() }
+    }
+
+    private fun playAnimation() {
+        val previewAnimatorY = ObjectAnimator.ofFloat(binding.ivPreview, View.TRANSLATION_Y, -50f, 0f).setDuration(500)
+        val previewAlpha = ObjectAnimator.ofFloat(binding.ivPreview, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val galleryAnimatorX = ObjectAnimator.ofFloat(binding.btnGallery, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val galleryAlpha = ObjectAnimator.ofFloat(binding.btnGallery, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val cameraAnimatorX = ObjectAnimator.ofFloat(binding.btnCamera, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val cameraAlpha = ObjectAnimator.ofFloat(binding.btnCamera, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val descriptionAlpha = ObjectAnimator.ofFloat(binding.edAddDescription, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val addAnimatorX = ObjectAnimator.ofFloat(binding.buttonAdd, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val addAlpha = ObjectAnimator.ofFloat(binding.buttonAdd, View.ALPHA, 0f, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            playTogether(
+                previewAnimatorY,
+                previewAlpha,
+                galleryAnimatorX,
+                galleryAlpha,
+                cameraAnimatorX,
+                cameraAlpha,
+                descriptionAlpha,
+                addAnimatorX,
+                addAlpha
+            )
+            start()
+        }
     }
 
     private val launcherGallery = registerForActivityResult(

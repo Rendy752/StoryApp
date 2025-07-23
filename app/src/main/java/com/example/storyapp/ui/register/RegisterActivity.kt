@@ -1,5 +1,7 @@
 package com.example.storyapp.ui.register
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -24,6 +26,31 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupAction()
+        playAnimation()
+    }
+
+    private fun playAnimation() {
+        val titleAnimatorX = ObjectAnimator.ofFloat(binding.tvRegisterTitle, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val titleAlpha = ObjectAnimator.ofFloat(binding.tvRegisterTitle, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val nameAlpha = ObjectAnimator.ofFloat(binding.edRegisterName, View.ALPHA, 0f, 1f).setDuration(500)
+        val emailAlpha = ObjectAnimator.ofFloat(binding.edRegisterEmail, View.ALPHA, 0f, 1f).setDuration(500)
+        val passwordAlpha = ObjectAnimator.ofFloat(binding.edRegisterPassword, View.ALPHA, 0f, 1f).setDuration(500)
+        val registerButtonAnimatorX = ObjectAnimator.ofFloat(binding.btnRegister, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val registerButtonAlpha = ObjectAnimator.ofFloat(binding.btnRegister, View.ALPHA, 0f, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            playTogether(
+                titleAnimatorX,
+                titleAlpha,
+                nameAlpha,
+                emailAlpha,
+                passwordAlpha,
+                registerButtonAnimatorX,
+                registerButtonAlpha
+            )
+            start()
+        }
     }
 
     private fun setupAction() {

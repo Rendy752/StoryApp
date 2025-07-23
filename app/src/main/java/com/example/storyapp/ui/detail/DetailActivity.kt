@@ -1,5 +1,7 @@
 package com.example.storyapp.ui.detail
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -46,6 +48,8 @@ class DetailActivity : AppCompatActivity() {
                             Glide.with(this)
                                 .load(story.photoUrl)
                                 .into(binding.ivDetailPhoto)
+
+                            playAnimation()
                         }
 
                         is Result.Error -> {
@@ -54,6 +58,34 @@ class DetailActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun playAnimation() {
+        val photoAnimatorY = ObjectAnimator.ofFloat(binding.ivDetailPhoto, View.TRANSLATION_Y, -50f, 0f).setDuration(500)
+        val photoAlpha = ObjectAnimator.ofFloat(binding.ivDetailPhoto, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val nameAnimatorX = ObjectAnimator.ofFloat(binding.tvDetailName, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val nameAlpha = ObjectAnimator.ofFloat(binding.tvDetailName, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val createdAtAnimatorX = ObjectAnimator.ofFloat(binding.tvDetailCreatedAt, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val createdAtAlpha = ObjectAnimator.ofFloat(binding.tvDetailCreatedAt, View.ALPHA, 0f, 1f).setDuration(500)
+
+        val descriptionAnimatorX = ObjectAnimator.ofFloat(binding.tvDetailDescription, View.TRANSLATION_X, -50f, 0f).setDuration(500)
+        val descriptionAlpha = ObjectAnimator.ofFloat(binding.tvDetailDescription, View.ALPHA, 0f, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            playTogether(
+                photoAnimatorY,
+                photoAlpha,
+                nameAnimatorX,
+                nameAlpha,
+                createdAtAnimatorX,
+                createdAtAlpha,
+                descriptionAnimatorX,
+                descriptionAlpha
+            )
+            start()
         }
     }
 

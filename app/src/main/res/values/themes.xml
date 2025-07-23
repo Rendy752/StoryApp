@@ -5,7 +5,7 @@
     <style name="Theme.StoryApp" parent="Base.Theme.StoryApp" />
 
     <style name="ThemeOverlay.App.PopupMenu" parent="">
-        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
     <style name="ThemeOverlay.App.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">

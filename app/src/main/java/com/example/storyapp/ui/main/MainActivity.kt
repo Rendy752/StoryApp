@@ -1,5 +1,6 @@
 package com.example.storyapp.ui.main
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -9,11 +10,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapp.R
-import com.example.storyapp.data.response.Story
 import com.example.storyapp.data.Result
+import com.example.storyapp.data.response.Story
 import com.example.storyapp.databinding.ActivityMainBinding
 import com.example.storyapp.ui.ViewModelFactory
 import com.example.storyapp.ui.adapter.StoryAdapter
@@ -53,12 +54,20 @@ class MainActivity : AppCompatActivity() {
             } else {
                 setupRecyclerView()
                 loadStories()
+                playAnimation()
             }
         }
 
         binding.fabAddStory.setOnClickListener {
             startActivity(Intent(this, AddStoryActivity::class.java))
         }
+    }
+
+    private fun playAnimation() {
+        val fabAnimator =
+            ObjectAnimator.ofFloat(binding.fabAddStory, View.ALPHA, 0f, 1f).setDuration(500)
+        fabAnimator.startDelay = 500
+        fabAnimator.start()
     }
 
     private fun setupRecyclerView() {
