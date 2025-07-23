@@ -34,6 +34,7 @@ class StoryAdapter : ListAdapter<Story, StoryAdapter.MyViewHolder>(DIFF_CALLBACK
         RecyclerView.ViewHolder(binding.root) {
         fun bind(story: Story) {
             binding.tvItemName.text = story.name
+            binding.tvItemDescription.text = story.description
             Glide.with(itemView.context)
                 .load(story.photoUrl)
                 .into(binding.ivItemPhoto)

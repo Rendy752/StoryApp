@@ -2,7 +2,7 @@
     android:initialLayout="@layout/story_widget"
     android:minWidth="250dp"
     android:minHeight="110dp"
-    android:previewImage="@drawable/ic_launcher_background"
+    android:previewImage="@drawable/no_image"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen" />

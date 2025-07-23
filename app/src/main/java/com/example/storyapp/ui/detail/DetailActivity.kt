@@ -8,11 +8,11 @@ import com.bumptech.glide.Glide
 import com.example.storyapp.data.Result
 import com.example.storyapp.databinding.ActivityDetailBinding
 import com.example.storyapp.ui.ViewModelFactory
+import com.example.storyapp.utils.formatDate
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    // Ganti MainViewModel menjadi DetailViewModel
     private val viewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -34,20 +34,22 @@ class DetailActivity : AppCompatActivity() {
                         is Result.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
+
                         is Result.Success -> {
                             binding.progressBar.visibility = View.GONE
                             val story = result.data.story
                             binding.tvDetailName.text = story.name
                             binding.tvDetailDescription.text = story.description
-                            // Menambahkan tanggal dibuat
-                            "Dibuat pada: ${story.createdAt}".also { binding.tvDetailCreatedAt.text = it }
+                            "Dibuat pada: ${formatDate(story.createdAt)}".also {
+                                binding.tvDetailCreatedAt.text = it
+                            }
                             Glide.with(this)
                                 .load(story.photoUrl)
                                 .into(binding.ivDetailPhoto)
                         }
+
                         is Result.Error -> {
                             binding.progressBar.visibility = View.GONE
-                            // Handle error, misalnya tampilkan Toast
                         }
                     }
                 }

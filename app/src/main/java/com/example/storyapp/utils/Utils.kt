@@ -16,9 +16,10 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
-private const val MAX_FILE_SIZE = 1000000 // 1MB
+private const val MAX_FILE_SIZE = 1000000
 
 private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
 
@@ -82,4 +83,16 @@ fun File.reduceFileImage(): File {
     } while (streamLength > MAX_FILE_SIZE)
     bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
     return file
+}
+
+fun formatDate(currentDate: String): String {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+    val date: Date = inputFormat.parse(currentDate) as Date
+
+    val outputFormat = SimpleDateFormat("d MMMM yyyy, HH:mm", Locale.getDefault())
+    outputFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+
+    return outputFormat.format(date)
 }
