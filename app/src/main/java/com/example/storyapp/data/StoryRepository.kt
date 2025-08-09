@@ -80,7 +80,7 @@ class StoryRepository private constructor(
         }
     }
 
-    fun uploadImage(imageFile: File, description: String) = liveData {
+    fun uploadImage(imageFile: File, description: String, lat: Double?, long: Double?) = liveData {
         emit(Result.Loading)
         val requestBody = description.toRequestBody("text/plain".toMediaType())
         val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
@@ -89,10 +89,19 @@ class StoryRepository private constructor(
             imageFile.name,
             requestImageFile
         )
+        val latRequestBody = lat?.toString()?.toRequestBody("text/plain".toMediaType())
+        val longRequestBody = long?.toString()?.toRequestBody("text/plain".toMediaType())
+
         try {
             val user = userPreference.getSession().first()
             val response =
-                apiService.addNewStory("Bearer ${user.token}", multipartBody, requestBody)
+                apiService.addNewStory(
+                    "Bearer ${user.token}",
+                    multipartBody,
+                    requestBody,
+                    latRequestBody,
+                    longRequestBody
+                )
             emit(Result.Success(response))
         } catch (e: HttpException) {
             emit(Result.Error(parseError(e)))

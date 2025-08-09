@@ -5,5 +5,6 @@ import com.example.storyapp.data.StoryRepository
 import java.io.File
 
 class AddStoryViewModel(private val repository: StoryRepository) : ViewModel() {
-    fun uploadImage(file: File, description: String) = repository.uploadImage(file, description)
+    fun uploadImage(file: File, description: String, lat: Double?, long: Double?) =
+        repository.uploadImage(file, description, lat, long)
 }
