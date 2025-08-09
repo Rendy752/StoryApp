@@ -10,17 +10,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapp.R
-import com.example.storyapp.data.Result
 import com.example.storyapp.data.response.Story
 import com.example.storyapp.databinding.ActivityMainBinding
 import com.example.storyapp.ui.ViewModelFactory
+import com.example.storyapp.ui.adapter.LoadingStateAdapter
 import com.example.storyapp.ui.adapter.StoryAdapter
 import com.example.storyapp.ui.addStory.AddStoryActivity
 import com.example.storyapp.ui.detail.DetailActivity
 import com.example.storyapp.ui.login.LoginActivity
+import com.example.storyapp.ui.maps.MapsActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -77,24 +80,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadStories() {
         val adapter = StoryAdapter()
-        binding.rvStories.adapter = adapter
-        viewModel.getStories().observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        adapter.submitList(result.data.listStory)
-                    }
-
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
-                }
+        binding.rvStories.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
             }
+        )
+
+        lifecycleScope.launch {
+            viewModel.story.collect { pagingData ->
+                adapter.submitData(pagingData)
+            }
+        }
+
+        adapter.addLoadStateListener { loadState ->
+            binding.progressBar.isVisible = loadState.source.refresh is LoadState.Loading
         }
 
         adapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
@@ -119,6 +118,11 @@ class MainActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
+                true
+            }
+
+            R.id.action_maps -> {
+                startActivity(Intent(this, MapsActivity::class.java))
                 true
             }
 

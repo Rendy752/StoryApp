@@ -1,11 +1,16 @@
 package com.example.storyapp.data
 
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.storyapp.data.response.ErrorResponse
 import com.example.storyapp.data.pref.UserPreference
 import com.example.storyapp.data.pref.User
+import com.example.storyapp.data.response.Story
 import com.example.storyapp.data.retrofit.ApiService
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -18,12 +23,22 @@ class StoryRepository private constructor(
     private val apiService: ApiService,
     private val userPreference: UserPreference
 ) {
+    fun getStories(): Flow<PagingData<Story>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService, userPreference)
+            }
+        ).flow
+    }
 
-    fun getStories() = liveData {
+    fun getStoriesWithLocation() = liveData {
         emit(Result.Loading)
         try {
             val user = userPreference.getSession().first()
-            val response = apiService.getStories("Bearer ${user.token}")
+            val response = apiService.getStories("Bearer ${user.token}", location = 1)
             emit(Result.Success(response))
         } catch (e: HttpException) {
             emit(Result.Error(parseError(e)))

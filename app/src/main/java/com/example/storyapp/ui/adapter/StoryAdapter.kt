@@ -1,18 +1,15 @@
 package com.example.storyapp.ui.adapter
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.storyapp.data.response.Story
 import com.example.storyapp.databinding.ItemStoryBinding
 
-class StoryAdapter : ListAdapter<Story, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter : PagingDataAdapter<Story, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private var onItemClickCallback: OnItemClickCallback? = null
 
@@ -26,27 +23,13 @@ class StoryAdapter : ListAdapter<Story, StoryAdapter.MyViewHolder>(DIFF_CALLBACK
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val story = getItem(position)
-        holder.bind(story)
-        holder.itemView.setOnClickListener {
-            onItemClickCallback?.onItemClicked(story)
+        val data = getItem(position)
+        if (data != null) {
+            holder.bind(data)
+            holder.itemView.setOnClickListener {
+                onItemClickCallback?.onItemClicked(data)
+            }
         }
-    }
-
-    override fun onViewAttachedToWindow(holder: MyViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        val animator = AnimatorSet()
-        val alpha = ObjectAnimator.ofFloat(holder.itemView, View.ALPHA, 0f, 1f)
-        val translationY = ObjectAnimator.ofFloat(holder.itemView, View.TRANSLATION_Y, 50f, 0f)
-
-        animator.playTogether(alpha, translationY)
-        animator.duration = 500
-        animator.start()
-    }
-
-    override fun onViewDetachedFromWindow(holder: MyViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        holder.itemView.clearAnimation()
     }
 
     class MyViewHolder(private val binding: ItemStoryBinding) :
