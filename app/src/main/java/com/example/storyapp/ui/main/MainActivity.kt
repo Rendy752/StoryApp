@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "Beranda"
+        supportActionBar?.title = "Dicoding Story"
 
         lifecycleScope.launch {
             val user = viewModel.getSession().first()
